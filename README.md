@@ -100,7 +100,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-> Visit `http://localhost:8000` in your browser.
+> Visit `https://shopkart-39k3.onrender.com` in your browser.
 
 ---
 
