@@ -124,34 +124,38 @@ Open your browser → **http://127.0.0.1:8080**
 ---
 
 ## 📁 Project Structure
+
+```
 codealpha_ShopKart/
-│
 ├── apps/
-│   ├── accounts/          # User registration, login, profile
-│   ├── products/          # Product catalog, categories, search
-│   ├── cart/              # Session-based shopping cart
-│   └── orders/            # Checkout, order processing, history
-│
+│   ├── accounts/           # User registration, login, profile
+│   ├── products/           # Product catalog, categories, search
+│   ├── cart/               # Session-based shopping cart
+│   └── orders/             # Checkout, order processing, history
 ├── templates/
-│   ├── base.html          # Base layout with navbar & footer
-│   ├── accounts/          # Login, register, profile templates
-│   ├── products/          # Product list & detail templates
-│   ├── cart/              # Cart template
-│   └── orders/            # Checkout, confirmation, history
-│
+│   ├── base.html           # Base layout with navbar & footer
+│   ├── accounts/           # Login, register, profile templates
+│   ├── products/           # Product list & detail templates
+│   ├── cart/               # Cart template
+│   └── orders/             # Checkout, confirmation, history
 ├── static/
-│   ├── css/main.css       # All styles & CSS variables
-│   └── js/                # cart.js, product.js, auth.js
-│
+│   ├── css/
+│   │   └── main.css        # All styles & CSS variables
+│   └── js/
+│       ├── cart.js         # Cart AJAX logic
+│       ├── product.js      # Product gallery & quantity
+│       └── auth.js         # Login/register validation
 ├── ecommerce/
-│   ├── settings.py        # Django configuration
-│   └── urls.py            # URL routing
-│
-├── requirements.txt       # Python dependencies
-├── Procfile               # Render deployment config
-├── build.sh               # Build script for deployment
-└── manage.py              # Django management
----
+│   ├── settings.py         # Django configuration
+│   ├── urls.py             # URL routing
+│   └── wsgi.py             # WSGI entry point
+├── media/                  # Product images
+├── requirements.txt        # Python dependencies
+├── Procfile                # Render deployment config
+├── build.sh                # Build script for deployment
+├── runtime.txt             # Python version for Render
+└── manage.py               # Django management
+```
 
 ## 🗄️ Database Models
 CustomUser      → Extended Django user (phone, address)
