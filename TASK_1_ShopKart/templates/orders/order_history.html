@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Orders | ShopKart{% endblock %}
+
+{% block extra_css %}
+<style>
+    .badge-cod {
+        background-color: #ffe0b2;
+        color: #e65100;
+        border: 1px solid #ffb74d;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+    .badge-online {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #81c784;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="margin: 40px 0;">
+    <h1 style="font-size: 2.8rem; border-bottom: 2px solid var(--color-border); padding-bottom: 15px; margin-bottom: 30px;">
+        Account <span style="color: var(--color-gold);">Dashboard</span>
+    </h1>
+
+    <div class="shop-layout">
+        <!-- Dashboard Sidebar Links -->
+        <div class="sidebar">
+            <div class="filter-section">
+                <h3>Navigation</h3>
+                <ul class="filter-list">
+                    <li class="filter-item">
+                        <a href="{% url 'accounts:profile' %}" class="filter-link">Profile Settings</a>
+                    </li>
+                    <li class="filter-item">
+                        <a href="{% url 'orders:order_history' %}" class="filter-link active">My Orders</a>
+                    </li>
+                    <li class="filter-item">
+                        <a href="{% url 'accounts:password_change' %}" class="filter-link">Change Password</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 25px; color: var(--color-gold); font-family: var(--font-heading);">
+                My Order History
+            </h2>
+
+            {% if orders %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Date Placed</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td style="font-weight: bold; font-family: var(--font-body);">
+                                        {{ order.order_number }}
+                                    </td>
+                                    <td style="font-size: 0.95rem; color: var(--color-muted);">
+                                        {{ order.created_at|date:"M d, Y H:i" }}
+                                    </td>
+                                    <td>
+                                        <!-- Color coded status badge -->
+                                        <span class="badge badge-{{ order.status|lower }}">
+                                            {{ order.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; flex-direction: column; gap: 5px; align-items: flex-start;">
+                                            {% if order.payment_method == 'cod' %}
+                                                <span class="badge-cod">COD</span>
+                                            {% else %}
+                                                <span class="badge-online">Online</span>
+                                                {% if order.upi_transaction_id %}
+                                                    <span style="font-size: 0.75rem; color: var(--color-muted); font-family: monospace; display: block; word-break: break-all;">
+                                                        Txn: {{ order.upi_transaction_id }}
+                                                    </span>
+                                                {% endif %}
+                                            {% endif %}
+                                            <span class="badge {% if order.payment_status == 'PAID' %}badge-delivered{% else %}badge-pending{% endif %}" style="font-size: 0.75rem; padding: 2px 6px;">
+                                                {{ order.payment_status }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="font-weight: bold; color: var(--color-gold);">
+                                        ₹{{ order.total }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'orders:order_confirm' order.order_number %}" class="btn btn-secondary btn-sm">
+                                            Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 40px; background-color: var(--bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius);">
+                    <p style="color: var(--color-muted); margin-bottom: 20px;">You haven't placed any orders yet.</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-sm">Shop Our Collection</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

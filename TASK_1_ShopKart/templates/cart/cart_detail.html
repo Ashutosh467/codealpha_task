@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Shopping Cart | ShopKart{% endblock %}
+
+{% block content %}
+<div style="margin: 40px 0;">
+    <h1 style="font-size: 2.8rem; border-bottom: 2px solid var(--color-border); padding-bottom: 15px; margin-bottom: 30px;">
+        Shopping <span style="color: var(--color-gold);">Cart</span>
+    </h1>
+
+    {% if cart %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                            <tr id="cart-row-{{ product.id }}">
+                                <td>
+                                    <div class="cart-item-info">
+                                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="cart-item-img">
+                                        <div>
+                                            <a href="{% url 'products:product_detail' product.slug %}" style="font-weight: bold; font-family: var(--font-heading); font-size: 1.1rem;">
+                                                {{ product.name }}
+                                            </a>
+                                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 4px;">
+                                                Category: {{ product.category.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="font-weight: 500;">
+                                    ₹{{ item.price }}
+                                </td>
+                                <td>
+                                    <div class="qty-selector">
+                                        <!-- Minus button updates quantity by decrementing -->
+                                        <button type="button" class="qty-btn" onclick="
+                                            const inp = document.getElementById('qty-input-{{ product.id }}');
+                                            let v = parseInt(inp.value) - 1;
+                                            if (v >= 0) {
+                                                inp.value = v;
+                                                updateQuantity({{ product.id }}, v);
+                                            }
+                                        ">-</button>
+                                        
+                                        <input type="text" id="qty-input-{{ product.id }}" value="{{ item.quantity }}" 
+                                               class="qty-input" readonly min="1" max="{{ product.stock }}">
+                                               
+                                        <!-- Plus button updates quantity by incrementing -->
+                                        <button type="button" class="qty-btn" onclick="
+                                            const inp = document.getElementById('qty-input-{{ product.id }}');
+                                            let v = parseInt(inp.value) + 1;
+                                            if (v <= {{ product.stock }}) {
+                                                inp.value = v;
+                                                updateQuantity({{ product.id }}, v);
+                                            } else {
+                                                showToast('Cannot exceed available stock of {{ product.stock }} units.', 'warning');
+                                            }
+                                        ">+</button>
+                                    </div>
+                                </td>
+                                <td style="font-weight: bold; color: var(--color-gold);" id="item-total-{{ product.id }}">
+                                    ₹{{ item.total_price }}
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="removeFromCart({{ product.id }})">
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Checkout Actions Summary -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 30px;">
+            <a href="{% url 'products:product_list' %}" class="btn btn-secondary">
+                Continue Shopping
+            </a>
+            
+            <div style="background-color: var(--bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: 30px; min-width: 320px; text-align: right;">
+                <h3 style="font-size: 1.1rem; color: var(--color-muted); margin-bottom: 5px; font-family: var(--font-body); text-transform: uppercase; font-weight: normal;">
+                    Grand Total
+                </h3>
+                <div style="font-size: 2.2rem; font-weight: 700; color: var(--color-gold); margin-bottom: 20px;" id="cart-grand-total">
+                    ₹{{ cart.get_total_price }}
+                </div>
+                
+                <a href="{% url 'orders:checkout' %}" class="btn btn-primary" style="display: block; text-align: center; padding: 12px 20px;">
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div style="text-align: center; padding: 80px 20px; background-color: var(--bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius);">
+            <div style="font-size: 4rem; color: var(--color-muted); margin-bottom: 20px;">&#128722;</div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Your Cart is Empty</h2>
+            <p style="color: var(--color-muted); margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                Explore our catalog to find fine garments, books, electronics, and kitchen accessories.
+            </p>
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                Explore Collection
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

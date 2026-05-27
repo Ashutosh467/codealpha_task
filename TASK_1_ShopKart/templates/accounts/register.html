@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Account | ShopKart{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 40px; background-color: var(--bg-card); border: 1px solid var(--color-border); border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+    <h2 style="font-size: 2.2rem; text-align: center; margin-bottom: 30px; color: var(--color-gold);">CREATE ACCOUNT</h2>
+    
+    <form method="POST" action="{% url 'accounts:register' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_username" class="form-label">Username *</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="form-feedback">{{ form.username.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email" class="form-label">Email Address *</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="form-feedback">{{ form.email.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone_number" class="form-label">Phone Number</label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="form-feedback">{{ form.phone_number.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_address" class="form-label">Shipping Address</label>
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="form-feedback">{{ form.address.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group" style="position: relative;">
+            <label for="id_password" class="form-label">Password *</label>
+            <input type="password" name="password" id="id_password" class="form-control" required placeholder="Choose a strong password">
+            <button type="button" class="password-toggle-btn btn btn-secondary btn-sm" data-target="id_password" style="position: absolute; right: 10px; top: 38px; padding: 4px 8px;">Show</button>
+            <!-- Password Strength Meter -->
+            <div class="pwd-meter-bar" style="width: 0%; height: 5px; margin-top: 8px; transition: width 0.3s ease;"></div>
+            {% if form.password.errors %}
+                <div class="form-feedback">{{ form.password.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="position: relative;">
+            <label for="id_confirm_password" class="form-label">Confirm Password *</label>
+            <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required placeholder="Confirm your password">
+            <button type="button" class="password-toggle-btn btn btn-secondary btn-sm" data-target="id_confirm_password" style="position: absolute; right: 10px; top: 38px; padding: 4px 8px;">Show</button>
+            <div id="password-match-feedback" style="font-size: 0.85rem; margin-top: 5px; font-weight: 500;"></div>
+            {% if form.confirm_password.errors %}
+                <div class="form-feedback">{{ form.confirm_password.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; padding: 12px;">Register</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 25px; color: var(--color-muted); font-size: 0.95rem;">
+        Already have an account? <a href="{% url 'accounts:login' %}" style="color: var(--color-gold);">Sign In</a>
+    </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

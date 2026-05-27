@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - SocialMini</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Main App Layout -->
+  <div class="main-layout" id="main-app" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">SocialMini</div>
+      <a href="/" class="nav-item"><span class="icon-home"></span> <span>Home</span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-search"></span> <span>Search</span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-explore"></span> <span>Explore</span></a>
+      <a href="#" class="nav-item nav-heart-btn" id="nav-heart-icon" style="position: relative;"><span class="icon-heart"></span> <span>Notifications</span><div id="notif-badge" class="notif-badge" style="display: none;"></div></a>
+      <a href="#" class="nav-item" id="create-post-btn"><span class="icon-plus"></span> <span>Create</span></a>
+      <a href="#" class="nav-item profile-link">
+        <div class="story-avatar-container no-ring current-user-avatar" style="width:24px;height:24px;border:none;"></div>
+        <span>Profile</span>
+      </a>
+      <div style="flex-grow:1;"></div>
+      <a href="#" class="nav-item logout-btn"><span class="icon-more"></span> <span>Logout</span></a>
+    </aside>
+
+    <!-- Bottom Nav (Mobile) -->
+    <div class="bottom-nav">
+      <a href="/" class="nav-item"><span class="icon-home"></span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-search"></span></a>
+      <a href="#" class="nav-item" id="mobile-create-post-btn"><span class="icon-plus"></span></a>
+      <a href="#" class="nav-item nav-heart-btn" style="position: relative;"><span class="icon-heart"></span></a>
+      <a href="#" class="nav-item profile-link">
+        <div class="story-avatar-container no-ring current-user-avatar" style="width:24px;height:24px;border:none;"></div>
+      </a>
+    </div>
+
+    <!-- Feed Content -->
+    <div class="content-wrapper">
+      <main style="width:100%; max-width:935px; margin:0 auto; padding-top:30px;">
+        
+        <div id="profile-header-container">
+          <div class="loader"></div>
+        </div>
+
+        <div class="profile-tabs" id="profile-tabs-container"></div>
+
+        <div class="profile-grid" id="posts-container">
+          <div class="loader"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Follow Modal -->
+  <div class="modal-overlay" id="follow-modal">
+    <div class="modal-content fade-in" style="max-height:400px;">
+      <div class="modal-header">
+        <span id="follow-modal-title"></span>
+        <button class="modal-close" onclick="document.getElementById('follow-modal').style.display='none'"><span class="icon-close"></span></button>
+      </div>
+      <div class="modal-body" id="follow-modal-list"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module">
+    import { setupAuth } from '/js/auth.js';
+    import { initProfile } from '/js/profile.js';
+    import { initNotifications } from '/js/notifications.js';
+    import { ICONS } from '/js/icons.js';
+    
+    // Inject icons
+    document.querySelectorAll('.icon-home').forEach(el => el.innerHTML = ICONS.home);
+    document.querySelectorAll('.icon-search').forEach(el => el.innerHTML = ICONS.search);
+    document.querySelectorAll('.icon-explore').forEach(el => el.innerHTML = ICONS.explore);
+    document.querySelectorAll('.icon-heart').forEach(el => el.innerHTML = ICONS.heart);
+    document.querySelectorAll('.icon-plus').forEach(el => el.innerHTML = ICONS.plusSquare);
+    document.querySelectorAll('.icon-more').forEach(el => el.innerHTML = ICONS.more);
+    document.querySelectorAll('.icon-close').forEach(el => el.innerHTML = ICONS.close);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      setupAuth(() => {
+        initProfile();
+        initNotifications();
+      });
+    });
+  </script>
+</body>
+</html>

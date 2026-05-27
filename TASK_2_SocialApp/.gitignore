@@ -1,0 +1,6 @@
+node_modules/
+.env
+uploads/
+socialmini.db
+socialmini.db-shm
+socialmini.db-wal

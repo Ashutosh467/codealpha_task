@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed | ShopKart{% endblock %}
+
+{% block extra_css %}
+<!-- Load Google Font Roboto -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+<style>
+    body {
+        background-color: #f1f3f6;
+        color: #212121;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .confirm-card {
+        max-width: 850px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 40px;
+        text-align: center;
+    }
+
+    /* Animated CSS Green Checkmark */
+    .success-checkmark {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 25px;
+        border-radius: 50%;
+        background-color: #4caf50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+        animation: scaleUp 0.4s ease-out forwards;
+    }
+
+    .success-checkmark svg {
+        width: 45px;
+        height: 45px;
+        stroke: #ffffff;
+        stroke-width: 4;
+        fill: none;
+        stroke-dasharray: 50;
+        stroke-dashoffset: 50;
+        animation: drawCheck 0.4s 0.3s ease-out forwards;
+    }
+
+    @keyframes scaleUp {
+        0% { transform: scale(0); }
+        80% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes drawCheck {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .confirm-title {
+        font-size: 2.2rem;
+        color: #111111;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .order-num-box {
+        font-size: 1.1rem;
+        color: #2874f0;
+        background-color: #f5f9ff;
+        display: inline-block;
+        padding: 8px 18px;
+        border-radius: 2px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        margin: 15px 0 25px;
+        border: 1px dashed #2874f0;
+    }
+
+    /* Summary Details Grid */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        text-align: left;
+        margin: 30px 0;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 25px 0;
+    }
+
+    @media (min-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .details-panel {
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 20px;
+    }
+
+    .panel-title {
+        font-weight: bold;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        color: #878787;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 8px;
+    }
+
+    /* Items table */
+    .items-list {
+        text-align: left;
+        margin-bottom: 30px;
+    }
+
+    .item-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .item-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border: 1px solid #e0e0e0;
+        border-radius: 2px;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-name {
+        font-weight: 500;
+        font-size: 1rem;
+        color: #212121;
+    }
+
+    .item-qty-price {
+        font-size: 0.85rem;
+        color: #878787;
+        margin-top: 3px;
+    }
+
+    .item-total {
+        font-weight: 500;
+        font-size: 1rem;
+        color: #212121;
+    }
+
+    /* Pricing totals block */
+    .totals-block {
+        max-width: 400px;
+        margin-left: auto;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 0.95rem;
+        margin-bottom: 40px;
+    }
+
+    .totals-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .totals-row.grand-total {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #212121;
+        border-top: 1px dashed #e0e0e0;
+        padding-top: 10px;
+        margin-top: 5px;
+    }
+
+    /* Action Buttons */
+    .actions-row {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-orange {
+        background-color: #fb641b;
+        color: #ffffff;
+        font-weight: 500;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        text-decoration: none;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-orange:hover {
+        background-color: #e25817;
+    }
+
+    .btn-secondary {
+        background-color: #ffffff;
+        color: #212121;
+        border: 1px solid #d3d3d3;
+        font-weight: 500;
+        padding: 12px 30px;
+        border-radius: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f9f9f9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+    
+    <div class="confirm-card">
+        
+        <!-- Big green checkmark animation -->
+        <div class="success-checkmark">
+            <svg viewBox="0 0 52 52">
+                <path d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+        </div>
+
+        <h1 class="confirm-title">Order Placed Successfully!</h1>
+        <p style="color: #878787; font-size: 1rem;">
+            Thank you for your purchase. Your order has been registered and is being processed.
+        </p>
+
+        <div>
+            <span class="order-num-box">Order ID: {{ order.order_number }}</span>
+        </div>
+
+        <div style="font-size: 1.1rem; color: #2e7d32; font-weight: 500; margin-bottom: 25px;">
+            🚚 Estimated Delivery: 3 to 5 business days
+        </div>
+
+        <!-- Details Grid -->
+        <div class="details-grid">
+            
+            <!-- Delivery Address -->
+            <div class="details-panel">
+                <div class="panel-title">Delivery Address</div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: #212121;">
+                    <strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
+                    {{ order.address }}<br>
+                    {{ order.city }}, {{ order.state }} - {{ order.zip_code }}<br>
+                    {{ order.country }}<br>
+                    <span style="color: #878787; font-size: 0.9rem; display: block; margin-top: 5px;">Phone: {{ order.phone }}</span>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="details-panel">
+                <div class="panel-title">Payment Information</div>
+                <div style="font-size: 0.95rem; line-height: 1.6; color: #212121;">
+                    Method: <strong>{{ order.get_payment_method_display }}</strong><br>
+                    Payment Status: 
+                    <span style="font-weight: 500; color: {% if order.payment_status == 'PAID' %}#2e7d32{% else %}#e65100{% endif %};">
+                        {{ order.payment_status }}
+                    </span><br>
+                    
+                    {% if order.payment_method == 'online' %}
+                        UPI Txn ID: <code style="background: #f1f1f1; padding: 2px 6px; border-radius: 3px; font-size: 0.9rem;">{{ order.upi_transaction_id }}</code><br>
+                    {% endif %}
+                    
+                    Order Status: <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: 500;">{{ order.status }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Items Summary List -->
+        <div class="items-list">
+            <h3 style="font-size: 1.1rem; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; color: #212121;">
+                Items Ordered
+            </h3>
+            
+            {% for item in order.items.all %}
+                <div class="item-row">
+                    {% if item.product %}
+                        <img src="{{ item.product.image_url }}" alt="{{ item.product_name }}" class="item-img">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1560472355-536de3962603?w=600&q=80" alt="{{ item.product_name }}" class="item-img">
+                    {% endif %}
+                    
+                    <div class="item-info">
+                        <div class="item-name">{{ item.product_name }}</div>
+                        <div class="item-qty-price">Price: ₹{{ item.product_price }} | Qty: {{ item.quantity }}</div>
+                    </div>
+                    
+                    <div class="item-total">
+                        ₹{{ item.item_total }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Totals Summary -->
+        <div class="totals-block">
+            <div class="totals-row">
+                <span style="color: #878787;">Subtotal</span>
+                <span>₹{{ order.subtotal }}</span>
+            </div>
+            <div class="totals-row">
+                <span style="color: #878787;">Delivery Charges</span>
+                <span>
+                    {% if order.shipping_cost == 0 %}
+                        <span style="color: #388e3c; font-weight: 500;">FREE</span>
+                    {% else %}
+                        ₹{{ order.shipping_cost }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="totals-row">
+                <span style="color: #878787;">GST / Tax (18%)</span>
+                <span>₹{{ order.tax }}</span>
+            </div>
+            <div class="totals-row grand-total">
+                <span>Grand Total</span>
+                <span>₹{{ order.total }}</span>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="actions-row">
+            <a href="{% url 'products:product_list' %}" class="btn-orange">
+                Continue Shopping
+            </a>
+            <a href="{% url 'orders:order_history' %}" class="btn-secondary">
+                View All Orders
+            </a>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

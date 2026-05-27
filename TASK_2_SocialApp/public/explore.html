@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore - SocialMini</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Main App Layout -->
+  <div class="main-layout" id="main-app" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">SocialMini</div>
+      <a href="/" class="nav-item"><span class="icon-home"></span> <span>Home</span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-search"></span> <span>Search</span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-explore"></span> <span>Explore</span></a>
+      <a href="#" class="nav-item nav-heart-btn" id="nav-heart-icon" style="position: relative;"><span class="icon-heart"></span> <span>Notifications</span><div id="notif-badge" class="notif-badge" style="display: none;"></div></a>
+      <a href="#" class="nav-item" id="create-post-btn"><span class="icon-plus"></span> <span>Create</span></a>
+      <a href="#" class="nav-item profile-link">
+        <div class="story-avatar-container no-ring current-user-avatar" style="width:24px;height:24px;border:none;"></div>
+        <span>Profile</span>
+      </a>
+      <div style="flex-grow:1;"></div>
+      <a href="#" class="nav-item logout-btn"><span class="icon-more"></span> <span>Logout</span></a>
+    </aside>
+
+    <!-- Bottom Nav (Mobile) -->
+    <div class="bottom-nav">
+      <a href="/" class="nav-item"><span class="icon-home"></span></a>
+      <a href="/explore.html" class="nav-item"><span class="icon-search"></span></a>
+      <a href="#" class="nav-item" id="mobile-create-post-btn"><span class="icon-plus"></span></a>
+      <a href="#" class="nav-item nav-heart-btn" style="position: relative;"><span class="icon-heart"></span></a>
+      <a href="#" class="nav-item profile-link">
+        <div class="story-avatar-container no-ring current-user-avatar" style="width:24px;height:24px;border:none;"></div>
+      </a>
+    </div>
+
+    <!-- Feed Content -->
+    <div class="content-wrapper">
+      <main class="feed-container" style="max-width: 935px; width: 100%;">
+        
+        <div class="search-container" style="margin-bottom: 20px;">
+          <input type="text" id="search-input" class="input-field" placeholder="Search users..." autocomplete="off" style="margin-bottom:0; background:#262626; border:none; border-radius:8px;">
+          <div class="search-results" id="search-results"></div>
+        </div>
+
+        <div class="explore-grid" id="explore-grid">
+          <div class="loader"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module">
+    import { setupAuth } from '/js/auth.js';
+    import { initExplore } from '/js/explore.js';
+    import { initNotifications } from '/js/notifications.js';
+    import { ICONS } from '/js/icons.js';
+    
+    // Inject icons
+    document.querySelectorAll('.icon-home').forEach(el => el.innerHTML = ICONS.home);
+    document.querySelectorAll('.icon-search').forEach(el => el.innerHTML = ICONS.search);
+    document.querySelectorAll('.icon-explore').forEach(el => el.innerHTML = ICONS.explore);
+    document.querySelectorAll('.icon-heart').forEach(el => el.innerHTML = ICONS.heart);
+    document.querySelectorAll('.icon-plus').forEach(el => el.innerHTML = ICONS.plusSquare);
+    document.querySelectorAll('.icon-more').forEach(el => el.innerHTML = ICONS.more);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      setupAuth(() => {
+        initExplore();
+        initNotifications();
+      });
+    });
+  </script>
+</body>
+</html>

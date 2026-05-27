@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopKart{% endblock %}</title>
+    <!-- CSRF Token Meta Tag for AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
+    <!-- Base Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- GLOBAL LOADING SPINNER -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="font-family: var(--font-heading); color: var(--color-gold); font-size: 1.1rem;">Processing...</p>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <!-- Brand Logo -->
+            <a href="{% url 'products:product_list_root' %}" class="nav-brand">
+                ShopKart
+            </a>
+
+            <!-- Search Bar -->
+            <form action="{% url 'products:product_list' %}" method="GET" class="search-bar">
+                <input type="text" name="q" placeholder="Search our collection..." value="{{ request.GET.q }}">
+                <button type="submit">&#128269;</button>
+            </form>
+
+            <!-- Nav Actions -->
+            <div class="nav-actions">
+                <a href="{% url 'products:product_list' %}" class="nav-link">Collection</a>
+                
+                {% if user.is_authenticated %}
+                    <div style="position: relative; display: inline-block;" class="nav-link">
+                        <a href="{% url 'accounts:profile' %}">Hello, {{ user.username }}</a>
+                        <span style="color: var(--color-muted); margin: 0 5px;">|</span>
+                        <a href="{% url 'accounts:logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                        <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="nav-link">Sign In</a>
+                    <a href="{% url 'accounts:register' %}" class="nav-link">Register</a>
+                {% endif %}
+
+                <!-- Cart Link with Badge -->
+                <a href="{% url 'cart:cart_detail' %}" class="nav-link cart-icon-wrapper">
+                    <span>&#128722;</span>
+                    <span class="cart-badge" {% if not cart|length %}style="display: none;"{% endif %}>{{ cart|length }}</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="container">
+        <!-- Messages Alert Block -->
+        <div id="messages-container" class="messages-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <span>{{ message }}</span>
+                        <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="{% url 'products:product_list_root' %}">Home</a>
+                <a href="{% url 'products:product_list' %}">Shop Collection</a>
+                <a href="{% url 'cart:cart_detail' %}">Shopping Cart</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'orders:order_history' %}">My Orders</a>
+                    <a href="{% url 'accounts:profile' %}">My Profile</a>
+                {% endif %}
+            </div>
+            <p>&copy; {% now "Y" %} ShopKart Luxury Retail. Crafted for elegance.</p>
+        </div>
+    </footer>
+
+    <!-- Global Cart AJAX Helpers -->
+    <script src="{% static 'js/cart.js' %}"></script>
+    
+    <!-- Auto-dismiss alerts Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

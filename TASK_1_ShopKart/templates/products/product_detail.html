@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ product.name }} | ShopKart{% endblock %}
+
+{% block content %}
+<div style="margin: 40px 0;">
+    <!-- Navigation Breadcrumbs -->
+    <p style="font-size: 0.9rem; color: var(--color-muted); margin-bottom: 30px;">
+        <a href="{% url 'products:product_list_root' %}">Home</a> &gt; 
+        <a href="{% url 'products:product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a> &gt; 
+        <span>{{ product.name }}</span>
+    </p>
+
+    <!-- Product Detail Layout -->
+    <div class="product-detail-grid">
+        <!-- 1. Media Image Gallery Column -->
+        <div class="gallery-container">
+            <div class="main-image-wrapper">
+                <img id="main-gallery-image" src="{{ product.image_url }}" alt="{{ product.name }}">
+            </div>
+            
+            <!-- Gallery Thumbnails -->
+            {% if images %}
+            <div class="thumbnails-grid">
+                <!-- Main image thumbnail -->
+                <div class="thumbnail-item active" 
+                     data-large-src="{{ product.image_url }}"
+                     data-alt="{{ product.name }}">
+                    <img src="{{ product.image_url }}" alt="Main image preview">
+                </div>
+                <!-- Extra images -->
+                {% for img in images %}
+                <div class="thumbnail-item" data-large-src="{{ img.image.url }}" data-alt="{{ img.alt_text }}">
+                    <img src="{{ img.image.url }}" alt="{{ img.alt_text }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 2. Product Meta Info Column -->
+        <div class="product-info-column">
+            <span style="font-size: 0.9rem; text-transform: uppercase; color: var(--color-gold); letter-spacing: 2px;">
+                {{ product.category.name }}
+            </span>
+            <h1>{{ product.name }}</h1>
+            
+            <!-- Availability Badge -->
+            {% if product.is_in_stock and product.is_available %}
+                <span class="stock-status-badge stock-in">In Stock ({{ product.stock }} available)</span>
+            {% else %}
+                <span class="stock-status-badge stock-out">Out of Stock</span>
+            {% endif %}
+
+            <!-- Pricing Details -->
+            <div style="display: flex; align-items: center; gap: 15px; margin: 10px 0;">
+                {% if product.discount_price %}
+                    <span style="font-size: 2.2rem; font-weight: 700; color: var(--color-gold);">₹{{ product.discount_price }}</span>
+                    <span style="font-size: 1.4rem; text-decoration: line-through; color: var(--color-muted);">₹{{ product.price }}</span>
+                    <span class="discount-badge" style="position: static;">{{ product.discount_percent }}% OFF</span>
+                {% else %}
+                    <span style="font-size: 2.2rem; font-weight: 700; color: var(--color-gold);">₹{{ product.price }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div style="border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: 20px 0; color: var(--color-muted);">
+                <h3 style="color: var(--color-cream); font-size: 1.1rem; margin-bottom: 10px; font-family: var(--font-body); font-weight: bold;">
+                    Description
+                </h3>
+                <p>{{ product.description|linebreaksbr }}</p>
+            </div>
+
+            <!-- Purchase Actions -->
+            {% if product.is_in_stock and product.is_available %}
+            <div style="display: flex; gap: 20px; align-items: center; margin-top: 15px;">
+                <div>
+                    <label class="form-label" style="margin-bottom: 8px;">Quantity</label>
+                    <div class="qty-selector">
+                        <button type="button" class="qty-btn qty-btn-minus">-</button>
+                        <input type="text" value="1" min="1" max="{{ product.stock }}" class="qty-input" readonly>
+                        <button type="button" class="qty-btn qty-btn-plus">+</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="add-to-cart-detail" 
+                        onclick="const qty = parseInt(document.querySelector('.qty-input').value) || 1; addToCart({{ product.id }}, qty);"
+                        style="flex-grow: 1; padding: 14px; margin-top: 25px;">
+                    Add to Cart
+                </button>
+            </div>
+            {% else %}
+            <button class="btn btn-secondary" disabled style="width: 100%; cursor: not-allowed; opacity: 0.5; padding: 14px; margin-top: 15px;">
+                Temporarily Out of Stock
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div style="margin-top: 80px; border-top: 1px solid var(--color-border); padding-top: 40px;">
+        <h2 style="font-size: 2rem; margin-bottom: 30px; font-family: var(--font-heading);">
+            You May Also <span style="color: var(--color-gold);">Like</span>
+        </h2>
+        <div class="products-grid">
+            {% for rp in related_products %}
+            <div class="product-card">
+                {% if rp.discount_price %}
+                    <span class="discount-badge">{{ rp.discount_percent }}% OFF</span>
+                {% endif %}
+
+                <div class="product-image-container">
+                    <a href="{% url 'products:product_detail' rp.slug %}">
+                        <img src="{{ rp.image_url }}" alt="{{ rp.name }}" class="product-card-img">
+                    </a>
+                </div>
+
+                <div class="product-details">
+                    <span class="product-category">{{ rp.category.name }}</span>
+                    <a href="{% url 'products:product_detail' rp.slug %}" class="product-name-link">
+                        {{ rp.name }}
+                    </a>
+                    
+                    <div class="product-price-row">
+                        {% if rp.discount_price %}
+                            <span class="current-price">₹{{ rp.discount_price }}</span>
+                            <span class="original-price">₹{{ rp.price }}</span>
+                        {% else %}
+                            <span class="current-price">₹{{ rp.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/product.js' %}"></script>
+{% endblock %}
