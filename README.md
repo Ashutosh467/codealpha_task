@@ -56,6 +56,6 @@ npm start
 👨‍💻 About
 Kumar Ashutosh Narayan
 Web Development Intern @ CodeAlpha
-Show Image
+https://github.com/Ashutosh467
 
 Submitted as part of the CodeAlpha Web Development Internship Program.
