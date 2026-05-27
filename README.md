@@ -62,6 +62,7 @@ codealpha_task/
 *A fully functional e-commerce web application with product browsing, cart management, and order processing*
 
 [![View Project](https://img.shields.io/badge/📂%20View%20Project-codealpha__ShopKart-092E20?style=for-the-badge&logo=django&logoColor=white)](https://github.com/Ashutosh467/codealpha_task/tree/main/codealpha_ShopKart)
+[![🚀 Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20App-FF6B6B?style=for-the-badge)](https://shopkart-39k3.onrender.com)
 
 </div>
 
@@ -169,7 +170,7 @@ npm run dev
 | **Auth** | Django Sessions | JWT Tokens |
 | **Database** | SQLite / PostgreSQL | SQLite / PostgreSQL |
 | **Frontend** | Django Templates | Vanilla JS SPA |
-| **Live Demo** | — | ✅ [View App](https://socialapp-0g3e.onrender.com) |
+| **Live Demo** | ✅ [View App](https://shopkart-39k3.onrender.com) | ✅ [View App](https://socialapp-0g3e.onrender.com) |
 | **API Style** | Django Views | REST API |
 
 ---
